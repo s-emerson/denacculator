@@ -2,16 +2,19 @@ This program is meant to take a NACC Data Freeze .csv file and convert it into a
 
 NACC Data Freeze files are available at  http://www.alz.washington.edu/
 
--> ADCs
--> Data Cores > Submission systems > UDS • FTLD • LBD
--> Your center
--> UDS • FTLD • LBD
--> "Please click here to enter..."
--> On the left sidebar: DOWNLOAD DATA > My Center's freeze data > Download CSV File
--> Right click and select "Save as..."
--> Make sure the file is saved with the .csv extension
+To collect the csv file
+---------------------
+    -> ADCs
+    -> Data Cores > Submission systems > UDS • FTLD • LBD
+    -> Your center
+    -> UDS • FTLD • LBD
+    -> "Please click here to enter..."
+    -> On the left sidebar: DOWNLOAD DATA > My Center's freeze data > Download  CSV File
+    -> Right click and select "Save as..."
+    -> Make sure the file is saved with the .csv extension
 
 Usage:
-`nacc/nacc2redcap <$INPUT_FILE.csv >$OUTPUT_FILE.csv`
 
-In which the output file will be placed in the top denacculator folder, ready to be uploaded as a REDCap data import.
+`$ denacc/nacc2redcap <$INPUT_FILE.csv >$OUTPUT_FILE.csv`
+
+In which the output file will be placed in the specified filepath (default is the denacculator top directory), ready to be uploaded as a REDCap data import.

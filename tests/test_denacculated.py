@@ -16,7 +16,7 @@ class TestDenacculated(unittest.TestCase):
         self.expected_field_list = list(self.expected_fields.keys())
 
     def test_for_current_field_list(self):
-        """ 
+        """
         Tests that field names are being converted properly using
         the dictionary below
         """
