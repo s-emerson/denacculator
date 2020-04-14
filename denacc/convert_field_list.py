@@ -5,7 +5,7 @@
 ###############################################################################
 
 
-def list_fields() -> list:
+def convert_fields() -> list:
     return [
         'ndv_ADCID'.lower(),
         'ndv_PTID'.lower(),

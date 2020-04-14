@@ -11,8 +11,8 @@ import csv
 import sys
 # import traceback
 
-from denacc import field_list
-from denacc import add_field_list
+from denacc import convert_field_list
+from denacc import add_fields
 from denacc import add_field_values
 
 
@@ -20,7 +20,7 @@ def rename_fields(file_input, err=sys.stderr):
     """ Adds ndv_ prefix and converts field labels to lower case """
     print("Beginning header renaming...", file=err)
 
-    header = field_list.list_fields()
+    header = convert_field_list.convert_fields()
     reader = csv.DictReader(file_input, fieldnames=header)
 
     with open('renamed.csv', 'w', newline='') as renamed:
@@ -30,6 +30,52 @@ def rename_fields(file_input, err=sys.stderr):
         writer.writerows(reader)
 
 
+def delete_columns(err=sys.stderr):
+    """ Deletes fields not present in REDCap project """
+
+    with open('renamed.csv', 'r', encoding='utf-8') as renamed:
+        reader = csv.DictReader(renamed)
+        with open('delcols.csv', 'w', newline='') as delcols:
+            fieldnames = add_fields.list_fields()
+            writer = csv.DictWriter(delcols, fieldnames=fieldnames)
+            writer.writeheader()
+            print("Deleting extra columns...", file=err)
+            for row in reader:
+                new = delete_values(row)
+                writer.writerow(new)
+
+
+def delete_values(row):
+    del row['ndv_visitnum']
+    del row['ndv_naccmoca']
+    del row['ndv_adgcexom']
+    del row['ndv_ngdsgwas']
+    del row['ndv_ngdsexom']
+    del row['ndv_ngdswes']
+    del row['ndv_ngdswgs']
+    del row['ndv_ngdsgwac']
+    del row['ndv_ngdsexac']
+    del row['ndv_ngdsweac']
+    del row['ndv_ngdswgac']
+    del row['ndv_adgcexr']
+    del row['ndv_naccspnl']
+    del row['ndv_naccengl']
+    del row['ndv_apreflan']
+    del row['ndv_ayrspan']
+    del row['ndv_ayrengl']
+    del row['ndv_apcspan']
+    del row['ndv_apcengl']
+    del row['ndv_aspkspan']
+    del row['ndv_areaspan']
+    del row['ndv_awrispan']
+    del row['ndv_aundspan']
+    del row['ndv_aspkengl']
+    del row['ndv_areaengl']
+    del row['ndv_awriengl']
+    del row['ndv_aundengl']
+    return row
+
+
 def add_columns(file_output, err=sys.stderr):
     """
     Adds ptid and redcap_event_name columns to beginning
@@ -37,46 +83,46 @@ def add_columns(file_output, err=sys.stderr):
     """
     print("Adding columns...", file=err)
 
-    renamed = open('renamed.csv', 'r', encoding='utf-8')
-    reader = csv.DictReader(renamed)
+    with open('delcols.csv', 'r', encoding='utf-8') as delcols:
+        reader = csv.DictReader(delcols)
 
-    with open('output.csv', 'w', newline='') as output:
-        fieldnames = add_field_list.list_fields()
-        writer = csv.DictWriter(output, fieldnames=fieldnames)
-        writer.writeheader()
-        print("Filling extra columns...", file=err)
-        for row in reader:
-            new = fill_extra_columns(row)
-            writer.writerow(new)
+        with open('output.csv', 'w', newline='') as output:
+            fieldnames = add_fields.list_fields()
+            writer = csv.DictWriter(output, fieldnames=fieldnames)
+            writer.writeheader()
+            print("Filling new columns...", file=err)
+            for row in reader:
+                new = fill_extra_columns(row)
+                writer.writerow(new)
 
 
 def fill_extra_columns(row, err=sys.stderr):
     """
-    Adds redcap_event_name value based on ndv_visitnum
+    Adds redcap_event_name value based on ndv_naccvnum
     """
     new = add_field_values.add_fields(row)
 
-    if int(new['ndv_visitnum']) == 1:
+    if int(new['ndv_naccvnum']) == 1:
         new['redcap_event_name'] = "initial_visit_year_arm_1"
-    elif int(new['ndv_visitnum']) == 2:
+    elif int(new['ndv_naccvnum']) == 2:
         new['redcap_event_name'] = "followup_visit_yea_arm_1"
-    elif int(new['ndv_visitnum']) == 3:
+    elif int(new['ndv_naccvnum']) == 3:
         new['redcap_event_name'] = "followup_visit_yea_arm_1b"
-    elif int(new['ndv_visitnum']) == 4:
+    elif int(new['ndv_naccvnum']) == 4:
         new['redcap_event_name'] = "followup_visit_yea_arm_1c"
-    elif int(new['ndv_visitnum']) == 5:
+    elif int(new['ndv_naccvnum']) == 5:
         new['redcap_event_name'] = "followup_visit_yea_arm_1d"
-    elif int(new['ndv_visitnum']) == 6:
+    elif int(new['ndv_naccvnum']) == 6:
         new['redcap_event_name'] = "followup_visit_yea_arm_1e"
-    elif int(new['ndv_visitnum']) == 7:
+    elif int(new['ndv_naccvnum']) == 7:
         new['redcap_event_name'] = "followup_visit_yea_arm_1f"
-    elif int(new['ndv_visitnum']) == 8:
+    elif int(new['ndv_naccvnum']) == 8:
         new['redcap_event_name'] = "followup_visit_yea_arm_1g"
-    elif int(new['ndv_visitnum']) == 9:
+    elif int(new['ndv_naccvnum']) == 9:
         new['redcap_event_name'] = "followup_visit_yea_arm_1h"
-    elif int(new['ndv_visitnum']) == 10:
+    elif int(new['ndv_naccvnum']) == 10:
         new['redcap_event_name'] = "followup_visit_yea_arm_1i"
-    elif int(new['ndv_visitnum']) == 11:
+    elif int(new['ndv_naccvnum']) == 11:
         new['redcap_event_name'] = "followup_visit_yea_arm_1j"
 
     return new
@@ -91,7 +137,9 @@ def main():
     file_output = sys.stdout
 
     rename_fields(file_input)
+    delete_columns()
     add_columns(file_output)
+    print("Done!", file=sys.stderr)
 
 
 if __name__ == '__main__':
