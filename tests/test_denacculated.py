@@ -8,8 +8,7 @@ from denacc import add_field_values
 
 class TestDenacculated(unittest.TestCase):
     """
-    Tests that the redcap_event_name field is filled according to the
-    value of ndv_naccvnum
+    Tests that each leg of the denacculator process is working properly
     """
 
     def setUp(self):
@@ -17,12 +16,15 @@ class TestDenacculated(unittest.TestCase):
         self.expected_field_list = list(self.expected_fields.keys())
 
     def test_for_current_field_list(self):
-
+        """ 
+        Tests that field names are being converted properly using
+        the dictionary below
+        """
         result = convert_field_list.convert_fields()
         self.assertEqual(self.expected_field_list, result)
 
     def test_for_fields_deleted(self):
-
+        """ Tests that the non-REDCap fields are deleted """
         expected_list = add_fields.list_fields()
         expected_list.remove('ptid')
         expected_list.remove('redcap_event_name')
@@ -32,7 +34,7 @@ class TestDenacculated(unittest.TestCase):
         self.assertEqual(expected_list, result_list)
 
     def test_for_fields_added(self):
-
+        """ Tests that the REDCap-required fields are added """
         added_fields = add_field_values.add_fields(self.expected_fields)
 
         e = self.expected_fields
@@ -70,7 +72,7 @@ class TestDenacculated(unittest.TestCase):
         self.assertEqual(added_fields, e)
 
     def test_fill_event_name(self):
-
+        """ Tests that the program is able to properly identify redcap_event_name based on ndv_naccvnum (value '3' given in dict) """
         expected = 'followup_visit_yea_arm_1b'
         added_fields = self.expected_fields
         added_fields['ptid'] = added_fields['ndv_ptid']
