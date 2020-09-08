@@ -86,14 +86,13 @@ def add_columns(file_output, err=sys.stderr):
     with open('delcols.csv', 'r', encoding='utf-8') as delcols:
         reader = csv.DictReader(delcols)
 
-        with open('output.csv', 'w', newline='') as output:
-            fieldnames = add_fields.list_fields()
-            writer = csv.DictWriter(output, fieldnames=fieldnames)
-            writer.writeheader()
-            print("Filling new columns...", file=err)
-            for row in reader:
-                new = fill_extra_columns(row)
-                writer.writerow(new)
+        fieldnames = add_fields.list_fields()
+        writer = csv.DictWriter(file_output, fieldnames=fieldnames)
+        writer.writeheader()
+        print("Filling new columns...", file=err)
+        for row in reader:
+            new = fill_extra_columns(row)
+            writer.writerow(new)
 
 
 def fill_extra_columns(row, err=sys.stderr):
