@@ -6,10 +6,8 @@
 # Use of this source code is governed by the license found in the LICENSE file.
 ###############################################################################
 
-# import argparse
 import csv
 import sys
-# import traceback
 
 from denacc import convert_field_list
 from denacc import add_fields
